@@ -21,3 +21,9 @@ the same gates every time. Sibling **shipr** absorbs `test_commands` as
 
 - Re-enable test-forge MCP as the brand
 - Build a test *runner* inside testr — compose: AI runs commands; testr/shipr store config
+
+## forge-forge registry
+
+- `test-forge` entry: `status: retired`, `successor: testr`
+- `testr` entry: active `type: tool`, invocation `cli`, Go install
+- `shipr` is the shipping sibling; both configs are committed (not gitignored)
