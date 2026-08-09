@@ -116,3 +116,21 @@ func TestEnsureProductConfigsCreatesBoth(t *testing.T) {
 		t.Fatal("expected both models")
 	}
 }
+
+func TestFrontierUsesLatestAttemptByTime(t *testing.T) {
+	dir := t.TempDir()
+	writeFile(t, filepath.Join(dir, "go.mod"), "module example.com/p\n\ngo 1.22\n")
+	m := DetectTestModel(dir, "")
+	if _, err := WriteTestModel(dir, m); err != nil {
+		t.Fatal(err)
+	}
+	for _, st := range []string{"planned", "running", "passed"} {
+		if _, _, err := RecordAttempt(dir, "stress-"+st, st, "", []string{"go test ./..."}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	fr := Frontier(dir)
+	if fr["latest_status"] != "passed" {
+		t.Fatalf("want latest_status=passed got %v (latest=%v)", fr["latest_status"], fr["latest_attempt"])
+	}
+}

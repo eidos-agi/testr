@@ -1,0 +1,17 @@
+{
+  "created_at": "2026-08-09T00:37:00.3479Z",
+  "goal": "stress L3 20260809T003655Z",
+  "notes": "",
+  "product_id": "testr",
+  "proofs": [
+    "go test ./...",
+    "go build ./..."
+  ],
+  "schema_version": 1,
+  "status": "passed",
+  "test_commands_snapshot": [
+    "go test ./...",
+    "go build ./...",
+    "python -m pytest -q"
+  ]
+}

@@ -15,7 +15,7 @@ const (
 	AttemptsRelDir = ".testr/test-attempts"
 	ShiprModelRel  = ".shipr/product-release-model.json"
 	// Version is the Go CLI / config schema generation version.
-	Version = "0.2.1"
+	Version = "0.2.2"
 )
 
 // TestModel is the durable per-product test config AI agents read.
@@ -316,7 +316,7 @@ func RecordAttempt(project, goal, status, notes string, proofs []string) (string
 	if proofs == nil {
 		proofs = []string{}
 	}
-	ts := time.Now().UTC().Format("20060102T150405Z")
+	ts := time.Now().UTC().Format("20060102T150405.000000000Z")
 	path := filepath.Join(root, AttemptsRelDir, ts+"-"+slug(goal)+".json")
 	attempt := map[string]any{
 		"schema_version":         1,
