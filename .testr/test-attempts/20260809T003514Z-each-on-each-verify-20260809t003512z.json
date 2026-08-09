@@ -1,0 +1,17 @@
+{
+  "created_at": "2026-08-09T00:35:14.053506Z",
+  "goal": "each-on-each verify 20260809T003512Z",
+  "notes": "each-on-each loop",
+  "product_id": "testr",
+  "proofs": [
+    "go test ./...",
+    "go build ./..."
+  ],
+  "schema_version": 1,
+  "status": "passed",
+  "test_commands_snapshot": [
+    "go test ./...",
+    "go build ./...",
+    "python -m pytest -q"
+  ]
+}
