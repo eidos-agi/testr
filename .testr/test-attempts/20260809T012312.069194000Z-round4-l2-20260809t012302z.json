@@ -1,0 +1,17 @@
+{
+  "created_at": "2026-08-09T01:23:12.069215Z",
+  "goal": "round4 L2 20260809T012302Z",
+  "notes": "",
+  "product_id": "testr",
+  "proofs": [
+    "go test ./...",
+    "go build ./..."
+  ],
+  "schema_version": 1,
+  "status": "passed",
+  "test_commands_snapshot": [
+    "go test ./...",
+    "go build ./...",
+    "python -m pytest -q"
+  ]
+}

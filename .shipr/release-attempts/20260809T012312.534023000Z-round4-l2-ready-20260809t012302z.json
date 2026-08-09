@@ -1,0 +1,64 @@
+{
+  "blocker_records": [],
+  "blockers": [],
+  "created_at": "2026-08-09T01:23:12.534047Z",
+  "gate_summary": [],
+  "goal": "round4 L2 ready 20260809T012302Z",
+  "learning_prompts": [
+    "What broke or slowed this release?",
+    "What proof was missing until late?",
+    "Which gate should become automatic next time?",
+    "Which human approval should remain explicit?"
+  ],
+  "next_actions": [
+    "request explicit human approval for public publish/deploy if needed",
+    "record shipped or rolled_back after the irreversible step"
+  ],
+  "notes": "",
+  "product_id": "testr",
+  "proofs": [
+    "go test ./...",
+    "go build ./..."
+  ],
+  "release_model_snapshot": {
+    "approval_gates": [
+      "credentials",
+      "payments",
+      "production mutations",
+      "public publish/tag",
+      "customer/outbound messaging"
+    ],
+    "artifact_types": [
+      "docs",
+      "go-module",
+      "python-package"
+    ],
+    "distribution_channels": [
+      "PyPI or uvx",
+      "go install / binary"
+    ],
+    "forge_stack": [
+      "forge-forge",
+      "security-forge",
+      "foss-forge",
+      "learning-forge",
+      "loss-forge",
+      "testr"
+    ],
+    "license": "MIT",
+    "open_source_status": "ready",
+    "proof_commands": [
+      "go test ./...",
+      "go build ./...",
+      "python -m pytest -q",
+      "python -m ruff check .",
+      "python -m ruff format --check .",
+      "verify README, changelog, and release notes match artifact version"
+    ],
+    "proof_source": "testr",
+    "repository_visibility": "public"
+  },
+  "schema_version": 1,
+  "source": null,
+  "status": "ready"
+}
