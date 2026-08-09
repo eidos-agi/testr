@@ -77,6 +77,10 @@ shipr model --project . --write --json   # absorbs testr proofs
 `testr frontier` surfaces `related_shipr` when a release model is present.
 Ship only after the AI has run the gates you care about and recorded them.
 
+## OPF
+
+Canonical product graph: [`docs/opf/`](docs/opf/) — validate with `python3 -m opf.validate docs/opf`.
+
 ## Methods source
 
 Historical testing forge: [test-forge](https://github.com/eidos-agi/test-forge) (retired).  

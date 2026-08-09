@@ -1,5 +1,9 @@
 # testr — agent notes
 
+## OPF
+
+Canonical product graph: `docs/opf/product.json`. Validate: `python3 -m opf.validate docs/opf`.
+
 ## Product identity
 
 testr is **AI testing config + proof memory**. It does **not** execute tests.
