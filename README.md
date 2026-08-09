@@ -1,54 +1,86 @@
 # testr
 
-**Persistent Eidos testing operator.** Learns how each product is *proven*, records test attempts, and keeps the test frontier concrete.
+> **AI testing config + proof memory** — not a test runner.  
+> Succession from retired [test-forge](https://github.com/eidos-agi/test-forge).  
+> Sibling ship config: [shipr](https://github.com/eidos-agi/shipr).
+
+## What this is
+
+**testr tells AI agents how a product is proven**, and stores that config so the
+next session can run the same gates.
+
+It is **not** an app that executes tests. The agent reads
+`.testr/product-test-model.json`, runs `test_commands` itself, then records
+results with `testr attempt`.
 
 ```text
-ship-forge  →  shipr     (how this product ships)
-test-forge  →  testr     (how this product is tested)   ← you are here
+shipr  →  how this product ships   (.shipr/)
+testr  →  how this product is tested  (.testr/)   ← you are here
 ```
 
-test-forge (methods/MCP) is **retired**. **testr** is the operator + per-repo memory.
+When both exist, **shipr prefers testr `test_commands` as `proof_commands`**.
 
-## Install
+## Install (Go — canonical)
 
 ```bash
-git clone https://github.com/eidos-agi/testr.git
-cd testr
-pip install -e .
-testr --version
+go install github.com/eidos-agi/testr/cmd/testr@latest
+# or from a clone:
+git clone https://github.com/eidos-agi/testr.git && cd testr
+go install ./cmd/testr
+testr version
 ```
 
-## Per-repo file (the point)
+Legacy Python under `src/testr/` is transitional. Prefer the Go binary.
 
-```text
-.testr/
-  product-test-model.json   # how this product is tested
-  test-attempts/            # ledger of runs
-```
-
-`.testr/` is gitignored by default (local operator memory), same idea as shipr’s `.shipr/`.
+## Use (agent workflow)
 
 ```bash
+# Materialize test config for AI
 testr model --project /path/to/product --write --json
-testr frontier --project /path/to/product --json
+
+# AI runs the listed test_commands itself
+
+# Record outcome (ledger only)
 testr attempt --project /path/to/product \
   --goal "full suite" \
   --status passed \
-  --proof "python -m pytest -q" \
+  --proof "go test ./..." \
   --json
+
+testr frontier --project /path/to/product --json
 ```
+
+With shipr on the same product:
+
+```bash
+testr model --project . --write --json
+shipr model --project . --write --json   # absorbs testr proofs
+```
+
+## Durable state
+
+```text
+.testr/
+  product-test-model.json   # how this product is tested (AI how-to)
+  test-attempts/            # ledger of proof runs
+```
+
+`.testr/` is gitignored by default (local config/memory), same idea as shipr.
 
 ## Relation to shipr
 
-When a product has a testr model, **shipr `proof_commands` should align with `test_commands`**.  
-Ship only after testr frontier says the gate you care about passed.
+| Tool | File | AI uses it for |
+|------|------|----------------|
+| testr | `.testr/product-test-model.json` | which commands prove the product |
+| shipr | `.shipr/product-release-model.json` | channels, gates, rollback + same proofs |
 
-Merge plan for shipping methods: [shipr SHIP-FORGE-MERGE](https://github.com/eidos-agi/shipr/blob/main/docs/SHIP-FORGE-MERGE.md).
+`testr frontier` surfaces `related_shipr` when a release model is present.
+Ship only after the AI has run the gates you care about and recorded them.
 
 ## Methods source
 
 Historical testing forge: [test-forge](https://github.com/eidos-agi/test-forge) (retired).  
-Best of its playbooks will absorb into testr docs/methods over time.
+Playbooks absorb into testr docs over time: `docs/TEST-FORGE-SUCCESSION.md`.
 
 ## License
 

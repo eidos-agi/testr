@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "testr"
 version = "0.1.0"
-description = "Persistent Eidos testing operator — per-product test model and run memory."
+description = "LEGACY Python CLI — prefer Go (cmd/testr). AI testing config + proof memory; does not run tests."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
