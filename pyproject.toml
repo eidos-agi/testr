@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "testr"
+version = "0.1.0"
+description = "Persistent Eidos testing operator — per-product test model and run memory."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "Eidos AGI", email = "daniel@eidosagi.com" }]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/eidos-agi/testr"
+Repository = "https://github.com/eidos-agi/testr"
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
+[project.scripts]
+testr = "testr.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/testr"]
