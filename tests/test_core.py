@@ -10,7 +10,7 @@ def test_detect_and_write(tmp_path: Path):
     assert "pytest" in model["test_suites"]
     path = write_test_model(tmp_path, model)
     assert path.exists()
-    assert ".testr/" in (tmp_path / ".gitignore").read_text()
+    assert ".testr/" not in (tmp_path / ".gitignore").read_text() if (tmp_path / ".gitignore").exists() else True
     p, attempt = record_attempt(tmp_path, goal="unit", status="passed", proofs=["pytest -q"])
     assert p.exists()
     assert attempt["status"] == "passed"

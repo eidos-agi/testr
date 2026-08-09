@@ -40,9 +40,9 @@ Usage:
                 [--notes TEXT] [--proof TEXT ...] [--json]
   testr frontier [--project PATH] [--json]
 
-Config file:  .testr/product-test-model.json
-Ledger:       .testr/test-attempts/
-Sibling:      shipr (.shipr/) — uses test_commands as proof_commands when shipping
+Config file:  .testr/product-test-model.json  (committed; not gitignored)
+Ledger:       .testr/test-attempts/              (committed)
+Sibling:      shipr (.shipr/) created if missing — proofs align with test_commands
 `, testr.Version)
 }
 

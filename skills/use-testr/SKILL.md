@@ -32,3 +32,7 @@ go install github.com/eidos-agi/testr/cmd/testr@latest
 ```
 
 Methods succession: `docs/TEST-FORGE-SUCCESSION.md`. Sibling: shipr.
+
+## Tracked config
+
+`.shipr/` and `.testr/` are committed product config. Tools strip ignore rules and create missing sibling models on write.

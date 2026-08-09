@@ -1,0 +1,65 @@
+{
+  "approval_gates": [
+    "credentials",
+    "payments",
+    "production mutations",
+    "public publish/tag",
+    "customer/outbound messaging"
+  ],
+  "artifact_types": [
+    "docs",
+    "go-module",
+    "python-package"
+  ],
+  "description": "",
+  "distribution_channels": [
+    "PyPI or uvx",
+    "go install / binary"
+  ],
+  "forge_stack": [
+    "forge-forge",
+    "security-forge",
+    "foss-forge",
+    "learning-forge",
+    "loss-forge",
+    "testr"
+  ],
+  "learning_questions": [
+    "What broke or slowed this release?",
+    "What proof was missing until late?",
+    "Which gate should become automatic next time?",
+    "Which human approval should remain explicit?"
+  ],
+  "license": "MIT",
+  "memory_paths": {
+    "attempts_dir": ".shipr/release-attempts",
+    "model": ".shipr/product-release-model.json"
+  },
+  "open_source_status": "ready",
+  "product_id": "testr",
+  "project_root": "/Users/dshanklinbv/repos-eidos-agi/testr",
+  "proof_commands": [
+    "go test ./...",
+    "go build ./...",
+    "python -m pytest -q",
+    "python -m ruff check .",
+    "python -m ruff format --check .",
+    "verify README, changelog, and release notes match artifact version"
+  ],
+  "proof_source": "testr",
+  "purpose": "Tell AI agents how this product ships. Store repeatable release config and attempt ledgers. Does not ship, deploy, or run proofs.",
+  "related_testr": {
+    "abs_path": "/Users/dshanklinbv/repos-eidos-agi/testr/.testr/product-test-model.json",
+    "loaded": true,
+    "model_path": ".testr/product-test-model.json",
+    "note": "When present, testr test_commands become shipr proof_commands"
+  },
+  "repository_visibility": "public",
+  "role": "ai_config_and_memory",
+  "rollback_paths": [
+    "bump patch version and release a fixed package; yank only for severe package faults",
+    "revert tag and republish previous binary"
+  ],
+  "schema_version": 1,
+  "updated_at": "2026-08-09T00:33:06.913954Z"
+}

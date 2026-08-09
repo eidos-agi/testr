@@ -1,0 +1,50 @@
+{
+  "description": "",
+  "evidence_paths": [
+    "test output / junit / coverage when configured"
+  ],
+  "learning_questions": [
+    "What failed that the ship path assumed green?",
+    "Which test should become a shipr proof_command?",
+    "What is flaky vs broken?"
+  ],
+  "memory_paths": {
+    "attempts_dir": ".testr/test-attempts",
+    "model": ".testr/product-test-model.json"
+  },
+  "methods_source": "test-forge (retired) → testr",
+  "product_id": "testr",
+  "project_root": "/Users/dshanklinbv/repos-eidos-agi/testr",
+  "purpose": "Tell AI agents how this product is proven. Store repeatable test config and attempt ledgers. Does not execute tests.",
+  "related_operators": [
+    "shipr"
+  ],
+  "related_shipr": {
+    "abs_path": "/Users/dshanklinbv/repos-eidos-agi/testr/.shipr/product-release-model.json",
+    "loaded": true,
+    "model_path": ".shipr/product-release-model.json",
+    "note": "shipr should use these test_commands as proof_commands when shipping",
+    "operator": "shipr",
+    "product_id": "testr",
+    "shipr_proof_commands": [
+      "go test ./...",
+      "go build ./...",
+      "python -m pytest -q",
+      "python -m ruff check .",
+      "python -m ruff format --check .",
+      "verify README, changelog, and release notes match artifact version"
+    ]
+  },
+  "role": "ai_config_and_memory",
+  "schema_version": 1,
+  "test_commands": [
+    "go test ./...",
+    "go build ./...",
+    "python -m pytest -q"
+  ],
+  "test_suites": [
+    "go",
+    "pytest"
+  ],
+  "updated_at": "2026-08-09T00:33:06.918907Z"
+}

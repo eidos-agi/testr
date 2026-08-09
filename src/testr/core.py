@@ -13,18 +13,38 @@ MODEL_PATH = Path(".testr/product-test-model.json")
 ATTEMPTS_DIR = Path(".testr/test-attempts")
 
 
+_CONFIG_IGNORE_FORMS = {
+    ".shipr",
+    ".shipr/",
+    ".shipr/*",
+    ".shipr/**",
+    ".testr",
+    ".testr/",
+    ".testr/*",
+    ".testr/**",
+}
+
+
 def ensure_testr_ignored(root: Path) -> None:
+    """Legacy name: strip .testr/.shipr ignores so configs are trackable."""
+    ensure_configs_tracked(root)
+
+
+def ensure_configs_tracked(root: Path) -> None:
+    """Remove .shipr/ and .testr/ ignore rules. Configs are committed product state."""
     gi = root / ".gitignore"
-    line = ".testr/"
-    if gi.exists():
-        text = gi.read_text()
-        if line not in text.splitlines() and ".testr" not in text:
-            with gi.open("a") as f:
-                if text and not text.endswith("\n"):
-                    f.write("\n")
-                f.write(line + "\n")
-    else:
-        gi.write_text(line + "\n")
+    if not gi.exists():
+        return
+    lines = gi.read_text().splitlines()
+    keep = [ln for ln in lines if ln.strip() not in _CONFIG_IGNORE_FORMS]
+    if keep == lines:
+        return
+    while keep and keep[-1] == "":
+        keep.pop()
+    text = "\n".join(keep)
+    if text:
+        text += "\n"
+    gi.write_text(text)
 
 
 def _exists(root: Path, *parts: str) -> bool:

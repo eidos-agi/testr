@@ -16,9 +16,12 @@ Go binary: `go install ./cmd/testr` (or `@latest`). Python `src/testr/` is legac
 ## Per-product files
 
 ```text
-.testr/product-test-model.json   # how this product is proven
-.testr/test-attempts/            # ledger (gitignored)
+.testr/product-test-model.json   # how this product is proven (committed)
+.testr/test-attempts/            # ledger (committed)
+.shipr/product-release-model.json  # sibling ship config (created if missing, committed)
 ```
+
+Do **not** gitignore `.testr/` or `.shipr/`. testr removes those ignore lines on write.
 
 ## Workflow
 

@@ -360,12 +360,12 @@
       "id": "opf:testr:gap:config-tracked",
       "type": "gap",
       "title": "Need committed .testr/.shipr config policy",
-      "status": "active",
+      "status": "complete",
       "provenance": {
         "by": "agent:grok",
         "method": "OPF v1 pack for shipr/testr after Go config-memory reorientation 2026-08-08"
       },
-      "description": "Direction: create config dirs and track them; do not gitignore."
+      "description": "Resolved: .shipr/ and .testr/ are product config, not gitignored. Tools strip ignore rules and create missing sibling models on write."
     }
   ],
   "relationships": [
@@ -1195,6 +1195,16 @@
       ],
       "actor": "agent:grok",
       "detail": "Created gap Need committed .testr/.shipr config policy"
+    },
+    {
+      "id": "opf:testr:gap:config-tracked:resolved-event",
+      "type": "status-changed",
+      "at": "2026-08-09T00:40:00Z",
+      "subjects": [
+        "opf:testr:gap:config-tracked"
+      ],
+      "actor": "agent:grok",
+      "detail": "Config tracking policy implemented: not gitignored; sibling ensure on write."
     }
   ]
 }
