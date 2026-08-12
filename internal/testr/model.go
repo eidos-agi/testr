@@ -2,6 +2,7 @@ package testr
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -15,7 +16,7 @@ const (
 	AttemptsRelDir = ".testr/test-attempts"
 	ShiprModelRel  = ".shipr/product-release-model.json"
 	// Version is the Go CLI / config schema generation version.
-	Version = "0.2.2"
+	Version = "0.3.0"
 )
 
 // TestModel is the durable per-product test config AI agents read.
@@ -269,10 +270,22 @@ func writeJSON(path string, v any) error {
 	return os.WriteFile(path, append(b, '\n'), 0o644)
 }
 
+// WriteTestModel writes only when the model file is missing (safe default).
 func WriteTestModel(project string, model TestModel) (string, error) {
+	return WriteTestModelForced(project, model, false)
+}
+
+// WriteTestModelForced writes the model. If a committed model already exists and
+// force is false, it refuses so agents cannot clobber product policy by accident.
+func WriteTestModelForced(project string, model TestModel, force bool) (string, error) {
 	root, _ := filepath.Abs(project)
 	ensureNotGitignored(root)
 	path := filepath.Join(root, ModelRelPath)
+	if !force {
+		if _, err := os.Stat(path); err == nil {
+			return path, fmt.Errorf("%s already exists; refusing to overwrite product policy (pass --force to replace, or edit the file)", path)
+		}
+	}
 	if err := writeJSON(path, model); err != nil {
 		return path, err
 	}
@@ -290,6 +303,26 @@ func LoadTestModel(project string) (TestModel, error) {
 	}
 	var m TestModel
 	return m, json.Unmarshal(b, &m)
+}
+
+// ResolveTestModel returns the model agents should use.
+//
+// Contract (2027 kickstart):
+//  1. If .testr/product-test-model.json exists → load it (source: committed).
+//  2. Else detect a starter model (source: detected) — never invent ceremony over a file.
+func ResolveTestModel(project, description string) (TestModel, string) {
+	root, _ := filepath.Abs(project)
+	if m, err := LoadTestModel(root); err == nil && m != nil {
+		m["model_source"] = "committed"
+		m["model_path"] = filepath.Join(root, ModelRelPath)
+		m["project_root"] = root
+		return m, "committed"
+	}
+	m := DetectTestModel(project, description)
+	m["model_source"] = "detected"
+	m["model_path"] = filepath.Join(root, ModelRelPath)
+	m["detect_warning"] = "No committed .testr/product-test-model.json. Detection invents starter tests (often too heavy, e.g. full npm test). Hand-edit path-relevant commands, commit, then never re-detect over it without --force."
+	return m, "detected"
 }
 
 func slug(text string) string {

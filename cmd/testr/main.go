@@ -33,16 +33,31 @@ func usage() {
 testr does NOT run tests.
 It stores how-this-product-is-proven config so AI agents can test repeatedly.
 
+2027 kickstart contract:
+  • Keyword "testr" means: load THIS product's committed model and obey it.
+  • Committed .testr/product-test-model.json ALWAYS wins over auto-detect.
+  • Detection is greenfield-only. Never treat detect output as product policy.
+  • Prefer path-relevant tests. Do not invent full-suite ceremony for every change.
+
 Usage:
-  testr model [--project PATH] [--description TEXT] [--write] [--json]
+  testr model [--project PATH] [--description TEXT] [--write] [--force] [--json]
   testr attempt --goal TEXT [--project PATH]
                 [--status planned|running|passed|failed|blocked|skipped]
                 [--notes TEXT] [--proof TEXT ...] [--json]
   testr frontier [--project PATH] [--json]
 
-Config file:  .testr/product-test-model.json  (committed; not gitignored)
+  model          Print the model agents should use (committed file if present).
+  model --write  Create model only if missing. Refuses to clobber without --force.
+  model --force  Required with --write to replace an existing committed model.
+
+Config file:  .testr/product-test-model.json  (committed; not gitignored)  ← SOURCE OF TRUTH
 Ledger:       .testr/test-attempts/              (committed)
-Sibling:      shipr (.shipr/) created if missing — proofs align with test_commands
+Sibling:      shipr (.shipr/) — proofs align with test_commands
+
+Agent workflow:
+  1. testr model --project . --json     # reads committed model; does NOT re-ceremony
+  2. YOU run path-relevant test_commands only
+  3. testr attempt --goal "…" --status passed --proof "…" --json
 `, testr.Version)
 }
 
@@ -62,7 +77,7 @@ func main() {
 	cmd := os.Args[1]
 	args := os.Args[2:]
 	project, desc, goal, status, notes := ".", "", "", "planned", ""
-	asJSON, write := false, false
+	asJSON, write, force := false, false, false
 	var proofs []string
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
@@ -70,6 +85,8 @@ func main() {
 			asJSON = true
 		case "--write":
 			write = true
+		case "--force":
+			force = true
 		case "--project":
 			i++
 			if i < len(args) {
@@ -107,14 +124,29 @@ func main() {
 	}
 	switch cmd {
 	case "model":
-		model := testr.DetectTestModel(project, desc)
+		var model testr.TestModel
+		var source string
+		if force && write {
+			model = testr.DetectTestModel(project, desc)
+			source = "detected"
+			model["model_source"] = "detected"
+		} else {
+			model, source = testr.ResolveTestModel(project, desc)
+		}
 		if write {
-			path, err := testr.WriteTestModel(project, model)
+			path, err := testr.WriteTestModelForced(project, model, force)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
 			model["written_to"] = path
+			model["model_source"] = source
+			if force {
+				model["model_source"] = "detected"
+				model["write_mode"] = "forced_replace"
+			} else {
+				model["write_mode"] = "created"
+			}
 		}
 		printOut(model, asJSON)
 	case "attempt":

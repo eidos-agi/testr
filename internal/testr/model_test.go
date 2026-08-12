@@ -134,3 +134,40 @@ func TestFrontierUsesLatestAttemptByTime(t *testing.T) {
 		t.Fatalf("want latest_status=passed got %v (latest=%v)", fr["latest_status"], fr["latest_attempt"])
 	}
 }
+
+func TestResolveTestModelPrefersCommitted(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "package.json"), []byte(`{"name":"x"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	committed := TestModel{
+		"schema_version": 1,
+		"product_id":     "custom-product",
+		"test_commands":  []string{"git diff --check"},
+	}
+	if _, err := WriteTestModelForced(dir, committed, true); err != nil {
+		t.Fatal(err)
+	}
+	m, src := ResolveTestModel(dir, "")
+	if src != "committed" {
+		t.Fatalf("source=%s", src)
+	}
+	if m["product_id"] != "custom-product" {
+		t.Fatalf("product_id=%v", m["product_id"])
+	}
+	cmds := stringSlice(m["test_commands"])
+	if len(cmds) != 1 || cmds[0] != "git diff --check" {
+		t.Fatalf("commands=%v", cmds)
+	}
+}
+
+func TestWriteTestModelRefusesClobber(t *testing.T) {
+	dir := t.TempDir()
+	m := TestModel{"schema_version": 1, "product_id": "x", "test_commands": []string{"a"}}
+	if _, err := WriteTestModelForced(dir, m, true); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := WriteTestModel(dir, m); err == nil {
+		t.Fatal("expected refuse")
+	}
+}

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "testr"
-version = "0.1.0"
+version = "0.3.0"
 description = "LEGACY Python CLI — prefer Go (cmd/testr). AI testing config + proof memory; does not run tests."
 readme = "README.md"
 license = "MIT"
